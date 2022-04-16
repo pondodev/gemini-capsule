@@ -1,4 +1,4 @@
-#!/opt/homebrew/bin/python3
+#!/usr/bin/python3
 
 if __name__ == "__main__": raise Exception("should not run config file")
 
