@@ -33,9 +33,39 @@ locally you should be able to run the server with the `run-server` script, which
 ### remote deployment
 once you decide to deploy to your live capsule, simply run `deploy`. this will process your capsule content source and then upload it to your remote server
 
+## current parser features
+
+### domain interpolation
+doing the following in your source `.gmi` file
+```
+=> gemini://<DOMAIN>
+```
+will interpolate to this when deployed locally
+```
+=> gemini://example.local
+```
+or this when deployed publicly
+```
+=> gemini://example.com
+```
+
+### hexdump display
+honestly i just think this looks cool. if you do the following
+```
+\`\`\`hex
+here is some text.
+and here is some text that is significantly longer so that it might cover multiple lines.
+\`\`\`
+```
+it will be converted to this
+```
+0x0000: here is some text...............................................
+0x0040: and here is some text that is significantly longer so that it mi
+0x0080: ght cover multiple lines........................................
+```
+
 ## TODO
 - add an easier way to exclude ipv6 configuration
 - add an upload only flag for the deploy script
 - stop `run-server` from creating a lock when the server fails to launch
-- add some actual processing to the process step
 - make first time deployment a bit better

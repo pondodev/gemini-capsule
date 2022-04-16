@@ -3,12 +3,16 @@
 from deploy_config import *
 import os, argparse
 
+args = None
 input_dir = "working_content/"
 output_dir = "content/"
 output_sink = "&> /dev/null"
 
+domain = None
+
 def main():
     global output_sink
+    global args
 
     args = init_args()
 
@@ -32,13 +36,86 @@ def init_args():
 
     return parser.parse_args()
 
+def init_process_vars():
+    global domain
+
+    if args.local:
+        domain = LOCAL_DOMAIN
+    else:
+        domain = PUBLIC_DOMAIN
+
 def process():
     print("processing content...")
+    init_process_vars()
     # TODO: actually process stuff
     os.system(f"rm -r {output_dir} {output_sink}")
-    os.system(f"mkdir {output_dir}")
-    os.system(f"cp -r {input_dir}* {output_dir}")
+    #os.system(f"cp -r {input_dir}* {output_dir}")
+    for root, _, files in os.walk(input_dir):
+        dir = output_dir + root[len(input_dir):]
+        os.system(f"mkdir {dir} {output_sink}")
+        for f in files:
+            process_file(os.path.join(root, f), os.path.join(dir, f))
     return True
+
+# add your own custom per-file processing here
+def process_file(src_path, dst_path):
+    f_in = open(src_path, "r")
+    f_out = open(dst_path, "w")
+
+    hex_mode = False
+    hex_count = 0x0
+    hex_line_len = 0x40
+
+    for line in f_in:
+        to_write = line
+
+        if "```hex" in line:
+            hex_mode = True
+            hex_count = 0x0
+        elif "```" in line:
+            hex_mode = False
+
+        if hex_mode:
+            hex_tuple = process_hex(line, hex_count, hex_line_len)
+            to_write = hex_tuple[0]
+            hex_count = hex_tuple[1]
+        else:
+            to_write = domain_replacer(line)
+
+        f_out.write(to_write)
+
+    f_in.close()
+    f_out.close()
+
+def domain_replacer(line):
+    if "<DOMAIN>" in line:
+        return line.replace("<DOMAIN>", domain)
+    else:
+        return line
+
+# returns (string output, int current_index)
+def process_hex(line, hex_count, hex_line_len):
+    if "```" in line:
+        return ("```HEX DUMP\n", hex_count)
+
+    output = ""
+    line = line[:len(line) - 1]
+
+    while line != "":
+        slice_index = min(hex_line_len, len(line))
+        sub_str = line[:slice_index]
+        line = line[slice_index:]
+
+        to_pad = hex_line_len - len(sub_str)
+        padding = ""
+        if (to_pad > 0):
+            for _ in range(to_pad):
+                padding += "."
+
+        output += f"{hex_count:#06x}: {sub_str}{padding}\n"
+        hex_count += hex_line_len
+
+    return (output, hex_count)
 
 def upload():
     print("uploading content...")
