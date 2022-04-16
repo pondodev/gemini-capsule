@@ -51,12 +51,12 @@ or this when deployed publicly
 
 ### hexdump display
 honestly i just think this looks cool. if you do the following
-```
-\`\`\`hex
+~~~markdown
+```hex
 here is some text.
 and here is some text that is significantly longer so that it might cover multiple lines.
-\`\`\`
 ```
+~~~
 it will be converted to this
 ```
 0x0000: here is some text...............................................
