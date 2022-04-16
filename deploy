@@ -1,0 +1,49 @@
+#!/opt/homebrew/bin/python3
+
+from deploy_config import *
+import os, argparse
+
+input_dir = "working_content/"
+output_dir = "content/"
+output_sink = "&> /dev/null"
+
+def main():
+    global output_sink
+
+    args = init_args()
+
+    if args.verbose:
+        output_sink = ""
+
+    if not process():
+        print("failed to process content")
+        return
+
+    if not args.local and not upload():
+        print("failed to upload content")
+        return
+
+    print("done!")
+
+def init_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-v", action="store_true", dest="verbose", help="show verbose output")
+    parser.add_argument("-l", action="store_true", dest="local", help="perform local deploy")
+
+    return parser.parse_args()
+
+def process():
+    print("processing content...")
+    # TODO: actually process stuff
+    os.system(f"rm -r {output_dir} {output_sink}")
+    os.system(f"mkdir {output_dir}")
+    os.system(f"cp -r {input_dir}* {output_dir}")
+    return True
+
+def upload():
+    print("uploading content...")
+    os.system(f"scp -r {output_dir}* {SERVER_USER}@{PUBLIC_DOMAIN}:{SERVER_CONTENT_DIR}")
+    return True
+
+if __name__ == "__main__": main()
+else: raise Exception("deploy script not to be included as module")

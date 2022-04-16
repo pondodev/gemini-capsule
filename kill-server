@@ -1,0 +1,11 @@
+#!/bin/bash
+
+source server-settings.conf
+
+if [ -f "$LOCK_FILE" ]; then
+    AGATE_PID=$(< $LOCK_FILE)
+    kill $AGATE_PID
+    rm $LOCK_FILE
+else
+    echo "no lock file found"
+fi

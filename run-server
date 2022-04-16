@@ -1,0 +1,16 @@
+#!/bin/bash
+
+source server-settings.conf
+
+if [ -f "$LOCK_FILE" ]; then
+    echo "$LOCK_FILE exists already. is the server already running?"
+else
+    agate --content $CONTENTDIR \
+        --addr $IPV4ADDR:1965 \
+        --addr $IPV6ADDR:1965 \
+        --hostname $DOMAIN \
+        --lang en-US &> server.log &
+
+    AGATE_PID=$!
+    echo "$AGATE_PID" > $LOCK_FILE
+fi

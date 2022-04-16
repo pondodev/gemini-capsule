@@ -1,0 +1,8 @@
+.certificates/
+content/
+__pycache__/
+
+server-settings.conf
+deploy_config.py
+.server_lock
+server.log

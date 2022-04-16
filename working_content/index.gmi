@@ -1,0 +1,6 @@
+# hello world!
+looks like your gemini page is working, nice! time to take it to the next level:
+
+=> gemini://gemini.circumlunar.space gemini project home page
+=> gemini://gemini.circumlunar.space/docs/specification.gmi gemini protocol spec
+=> gemini://gemini.circumlunar.space/docs/gemtext.gmi a quick introduction to gemtext markup
