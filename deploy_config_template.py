@@ -8,5 +8,5 @@ SERVER_USER = "admin"
 SERVER_CONTENT_DIR = "/home/admin/serve/content"
 
 # for processing
-LOCAL_DOMAIN = "example.local"
-
+LOCAL_DOMAIN = "MOEKA.local"
+COMMENT_SYMBOL = "!--"

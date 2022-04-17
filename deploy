@@ -76,11 +76,12 @@ def process_file(src_path, dst_path):
             hex_mode = False
 
         if hex_mode:
-            hex_tuple = process_hex(line, hex_count, hex_line_len)
+            hex_tuple = process_hex(to_write, hex_count, hex_line_len)
             to_write = hex_tuple[0]
             hex_count = hex_tuple[1]
         else:
-            to_write = domain_replacer(line)
+            to_write = comment_remover(to_write)
+            to_write = domain_replacer(to_write)
 
         f_out.write(to_write)
 
@@ -90,6 +91,15 @@ def process_file(src_path, dst_path):
 def domain_replacer(line):
     if "<DOMAIN>" in line:
         return line.replace("<DOMAIN>", domain)
+    else:
+        return line
+
+def comment_remover(line):
+    if COMMENT_SYMBOL in line:
+        to_return = line[:line.index(COMMENT_SYMBOL)]
+        if to_return != "":
+            to_return += "\n" # make sure we add the newline we would have otherwise removed
+        return to_return
     else:
         return line
 
