@@ -47,9 +47,7 @@ def init_process_vars():
 def process():
     print("processing content...")
     init_process_vars()
-    # TODO: actually process stuff
     os.system(f"rm -r {output_dir} {output_sink}")
-    #os.system(f"cp -r {input_dir}* {output_dir}")
     for root, _, files in os.walk(input_dir):
         dir = output_dir + root[len(input_dir):]
         os.system(f"mkdir {dir} {output_sink}")
@@ -59,6 +57,9 @@ def process():
 
 # add your own custom per-file processing here
 def process_file(src_path, dst_path):
+    if src_path[-4:] == ".swp": # ignore vim swap files
+        return
+
     f_in = open(src_path, "r")
     f_out = open(dst_path, "w")
 
